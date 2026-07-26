@@ -27,7 +27,7 @@ class AutorController {
   static async cadastrarAutor(req, res) {
     try {
       const novoAutor = await autor.create(req.body);
-      res.status(201).json({ message: "criado com sucesso", livro: novoAutor });
+      res.status(201).json({ message: "criado com sucesso", Autor: novoAutor });
     } catch (erro) {
       res
         .status(500)
