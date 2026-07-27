@@ -38,8 +38,12 @@ class AutorController {
   static async atualizarAutor(req, res, next) {
     try {
       const id = req.params.id;
-      await autor.findByIdAndUpdate(id, req.body);
-      res.status(200).json({ message: "Autor atualizado" });
+      const autorResultado = await autor.findByIdAndUpdate(id, req.body);
+      if (autorResultado != null) {
+        res.status(200).json({ message: "Autor atualizado" });
+      } else {
+        next(new naoEncontrado(`id do autor não localizado`));
+      }
     } catch (erro) {
       next(erro);
     }
@@ -48,8 +52,12 @@ class AutorController {
   static async deletarAutor(req, res, next) {
     try {
       const id = req.params.id;
-      await autor.findByIdAndDelete(id);
-      res.status(200).json({ message: "Autor Deletado" });
+      const autorResultado = await autor.findByIdAndDelete(id);
+      if (autorResultado != null) {
+        res.status(200).json({ message: "Autor Deletado" });
+      } else {
+        next(new naoEncontrado(`id do autor não localizado`));
+      }
     } catch (erro) {
       next(erro);
     }
