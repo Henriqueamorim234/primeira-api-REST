@@ -1,6 +1,5 @@
 import express from "express";
 import livros from "./livrosRoutes.js";
-import { expectFailure } from "node:test";
 import autores from "./autorRoutes.js";
 
 const routes = (app) => {
