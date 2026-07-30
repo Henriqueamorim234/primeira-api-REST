@@ -1,10 +1,10 @@
 import naoEncontrado from "../erros/naoEncontrado.js";
-import { autor } from "../models/index.js";
+import { autores } from "../models/index.js";
 
 class AutorController {
   static async listarAutor(req, res, next) {
     try {
-      const autorLivros = await autor.find({});
+      const autorLivros = await autores.find({});
       res.status(200).json(autorLivros);
     } catch (erro) {
       next(erro);
@@ -14,7 +14,7 @@ class AutorController {
   static async listarAutorPorID(req, res, next) {
     try {
       const id = req.params.id;
-      const autorEncontrado = await autor.findById(id);
+      const autorEncontrado = await autores.findById(id);
 
       if (autorEncontrado !== null) {
         res.status(200).json(autorEncontrado);
@@ -28,7 +28,7 @@ class AutorController {
 
   static async cadastrarAutor(req, res, next) {
     try {
-      const novoAutor = await autor.create(req.body);
+      const novoAutor = await autores.create(req.body);
       res.status(201).json({ message: "criado com sucesso", Autor: novoAutor });
     } catch (erro) {
       next(erro);
@@ -38,7 +38,7 @@ class AutorController {
   static async atualizarAutor(req, res, next) {
     try {
       const id = req.params.id;
-      const autorResultado = await autor.findByIdAndUpdate(id, req.body);
+      const autorResultado = await autores.findByIdAndUpdate(id, req.body);
       if (autorResultado != null) {
         res.status(200).json({ message: "Autor atualizado" });
       } else {
@@ -52,7 +52,7 @@ class AutorController {
   static async deletarAutor(req, res, next) {
     try {
       const id = req.params.id;
-      const autorResultado = await autor.findByIdAndDelete(id);
+      const autorResultado = await autores.findByIdAndDelete(id);
       if (autorResultado != null) {
         res.status(200).json({ message: "Autor Deletado" });
       } else {

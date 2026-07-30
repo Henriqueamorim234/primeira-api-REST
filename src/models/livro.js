@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { autorSchema } from "./Autor.js";
 
 const livroSchema = new mongoose.Schema(
   {
@@ -10,7 +9,7 @@ const livroSchema = new mongoose.Schema(
     },
     editora: { type: String },
     preco: { type: Number },
-    paginas: {
+    numeroPaginas: {
       type: Number,
       min: [
         10,
@@ -22,7 +21,8 @@ const livroSchema = new mongoose.Schema(
       ],
     },
     autor: {
-      type: autorSchema,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "autores",
       required: [true, "o autor do livro é obrigatorio"],
     },
   },

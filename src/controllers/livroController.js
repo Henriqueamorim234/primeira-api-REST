@@ -1,5 +1,5 @@
 import naoEncontrado from "../erros/naoEncontrado.js";
-import { livro, autor } from "../models/index.js";
+import { livro, autores } from "../models/index.js";
 
 class LivroController {
   static async listarLivros(req, res, next) {
@@ -28,7 +28,7 @@ class LivroController {
   static async cadastrarLivro(req, res, next) {
     const novoLivro = req.body;
     try {
-      const autorEncontrado = await autor.findById(novoLivro.autor);
+      const autorEncontrado = await autores.findById(novoLivro.autor);
       const livroCompleto =
         autorEncontrado == null
           ? { ...novoLivro, autor: null }
@@ -71,19 +71,44 @@ class LivroController {
     }
   }
 
-  static async listarLivrosPorEditora(req, res, next) {
-    const editora = req.query.editora;
+  static async listarLivrosPorFiltro(req, res, next) {
+    const busca = await processaBusca(req.query);
+
     try {
-      const livrosPorEditora = await livro.find({ editora: editora });
-      if (livrosPorEditora != null) {
-        res.status(200).json(livrosPorEditora);
+      if (busca != null) {
+        const livroResultado = await livro.find(busca).populate("autor");
+
+        res.status(200).json(livroResultado);
       } else {
-        next(new naoEncontrado("editora não encontrada para buscar os livros"));
+        res.status(200).send([]);
       }
     } catch (erro) {
       next(erro);
     }
   }
+}
+
+async function processaBusca(parametros) {
+  const { editora, titulo, minPaginas, maxPaginas, nomeAutor } = parametros;
+  let busca = {};
+
+  if (editora) busca.editora = editora;
+  if (titulo) busca.titulo = { $regex: titulo, $options: "i" };
+
+  if (minPaginas || maxPaginas) busca.numeroPaginas = {};
+
+  if (minPaginas) busca.numeroPaginas.$gte = Number(minPaginas);
+  if (maxPaginas) busca.numeroPaginas.$lte = Number(maxPaginas);
+  if (nomeAutor) {
+    const autor = await autores.findOne({ nome: nomeAutor });
+
+    if (!autor) {
+      busca = null;
+    } else {
+      busca.autor = autor._id;
+    }
+  }
+  return busca;
 }
 
 export default LivroController;
